@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:gplx/pages/review/review_signs.dart';
 import 'package:gplx/pages/review/review_test_list.dart';
 import 'package:gplx/pages/simulator/simulator_dashboard.dart';
 import 'package:gplx/pages/test/test_list.dart';
+import 'package:gplx/pages/review/review_signs.dart'; // Import the new page
 
 void main() {
   runApp(MyApp());
@@ -64,19 +66,9 @@ class _DashboardPageState extends State<DashboardPage> {
       'color': Colors.brown,
     },
     {
-      'title': 'Top 50 câu sai',
-      'icon': Icons.bar_chart,
-      'color': Colors.blueGrey,
-    },
-    {
-      'title': '120 mô phỏng',
+      'title': '120 câu mô phỏng',
       'icon': Icons.lightbulb,
       'color': Colors.cyan,
-    },
-    {
-      'title': 'Bỏ quảng cáo',
-      'icon': Icons.block,
-      'color': Colors.pink,
     },
   ];
 
@@ -127,11 +119,18 @@ class _DashboardPageState extends State<DashboardPage> {
                               builder: (context) => TestListPage(),
                             ),
                           );
-                        } else if (dashboardItems[index]['title'] == '120 mô phỏng') {
+                        } else if (dashboardItems[index]['title'] == '120 câu mô phỏng') {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => SimulationDashboardPage(),
+                            ),
+                          );
+                        } else if (dashboardItems[index]['title'] == 'Các biển báo') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ReviewSignPage(), // Navigate to ReviewSignPage
                             ),
                           );
                         } else {
@@ -165,16 +164,6 @@ class _DashboardPageState extends State<DashboardPage> {
                     ),
                   );
                 },
-              ),
-            ),
-            Container(
-              height: 60,
-              color: Colors.white,
-              child: Center(
-                child: Text(
-                  'Quảng cáo: Trải nghiệm động xe 7 chỗ - Giảm ngay 120K',
-                  style: TextStyle(fontSize: 14, color: Colors.black),
-                ),
               ),
             ),
           ],

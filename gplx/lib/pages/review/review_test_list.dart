@@ -125,7 +125,8 @@ class _ReviewTestListPageState extends State<ReviewTestListPage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => ReviewQuestionPage(
-                            categoryTitle: "Ten bo de",
+                            categoryTitle: filteredTests[index].title!,
+
                           ),
                         ),
                       );

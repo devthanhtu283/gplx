@@ -55,11 +55,19 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  assets:
+    - assets/videos/noname.mp4
+    - assets/signs/
+    - assets/signs/cam/
+    - assets/signs/danger/
+    - assets/signs/instruction/
+    - assets/signs/direction/
+    - assets/signs/extra/
+    - assets/signs/roadLine/
+
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
 
-assets:
-  - assets/videos/noname.mp4
