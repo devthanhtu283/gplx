@@ -1,8 +1,10 @@
 package com.demo.controllers;
 
+import com.demo.dtos.RankDTO;
 import com.demo.dtos.TestDTO;
 import com.demo.entities.Test;
 import com.demo.repositories.TestRepository;
+import com.demo.services.RankService;
 import com.demo.services.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,8 @@ import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 public class TestController {
     @Autowired
     private TestService testService;
+    @Autowired
+    private RankService rankService;
     @GetMapping(value = "findById/{id}", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
     public ResponseEntity<TestDTO> findById(@PathVariable Long id) {
         try {
@@ -33,14 +37,25 @@ public class TestController {
             return new ResponseEntity<TestDTO>(HttpStatus.BAD_REQUEST);
         }
     }
-    @GetMapping(value = "findAllByType/{type}", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<TestDTO>> findAllByType(@PathVariable int type) {
+    @GetMapping(value = "findAllByTypeAndRankId/{type}/{rankId}", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<TestDTO>> findAllByTypeAndRankId(@PathVariable int type, @PathVariable int rankId) {
         try {
-            return new ResponseEntity<List<TestDTO>>(testService.findAllByType(type), HttpStatus.OK);
+            return new ResponseEntity<List<TestDTO>>(testService.findAllByTypeAndRankId(type, rankId), HttpStatus.OK);
         }
         catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<List<TestDTO>>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping(value = "findAllRank", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<RankDTO>> findAllByType() {
+        try {
+            return new ResponseEntity<List<RankDTO>>(rankService.findAll(), HttpStatus.OK);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<List<RankDTO>>(HttpStatus.BAD_REQUEST);
         }
     }
 }

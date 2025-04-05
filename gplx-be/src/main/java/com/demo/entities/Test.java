@@ -2,36 +2,47 @@ package com.demo.entities;
 
 import jakarta.persistence.*;
 
-import lombok.*;
+import java.util.List;
 
 @Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
+@Table(name = "test")
 public class Test {
-
     @Id
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-    @Column(nullable = false)
     private String title;
 
-    @Column
+    @Column(columnDefinition = "text")
     private String description;
 
-    @Column(nullable = false)
-    private Integer type;
+    @ManyToOne
+    @JoinColumn(name = "rank_id")
+    private Rank rank;
 
-    @Column(nullable = false)
     private Integer time;
 
-    public Long getId() {
+    private Integer type;
+
+    @Column(name = "passed_score")
+    private Integer passedScore;
+
+    @Column(name = "number_of_questions")
+    private Integer numberOfQuestions;
+
+    private boolean status;
+
+    @OneToMany(mappedBy = "test")
+    private List<Chapter> chapters;
+
+    @OneToMany(mappedBy = "test")
+    private List<TestDetails> testDetails;
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -51,12 +62,12 @@ public class Test {
         this.description = description;
     }
 
-    public Integer getType() {
-        return type;
+    public Rank getRank() {
+        return rank;
     }
 
-    public void setType(Integer type) {
-        this.type = type;
+    public void setRank(Rank rank) {
+        this.rank = rank;
     }
 
     public Integer getTime() {
@@ -67,15 +78,51 @@ public class Test {
         this.time = time;
     }
 
-    public Rank getRank() {
-        return rank;
+    public Integer getType() {
+        return type;
     }
 
-    public void setRank(Rank rank) {
-        this.rank = rank;
+    public void setType(Integer type) {
+        this.type = type;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "rank_id", referencedColumnName = "id", nullable = false)
-    private Rank rank;  // Mối quan hệ với Rank
+    public Integer getPassedScore() {
+        return passedScore;
+    }
+
+    public void setPassedScore(Integer passedScore) {
+        this.passedScore = passedScore;
+    }
+
+    public Integer getNumberOfQuestions() {
+        return numberOfQuestions;
+    }
+
+    public void setNumberOfQuestions(Integer numberOfQuestions) {
+        this.numberOfQuestions = numberOfQuestions;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
+    public List<Chapter> getChapters() {
+        return chapters;
+    }
+
+    public void setChapters(List<Chapter> chapters) {
+        this.chapters = chapters;
+    }
+
+    public List<TestDetails> getTestDetails() {
+        return testDetails;
+    }
+
+    public void setTestDetails(List<TestDetails> testDetails) {
+        this.testDetails = testDetails;
+    }
 }

@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface TestService {
     public TestDTO findById(Long id);
-    public List<TestDTO> findAllByType(int type);
+    public List<TestDTO> findAllByTypeAndRankId(int type, int rankId);
 }

@@ -10,7 +10,9 @@ public class TestDTO {
     private String description;
     private Integer type;
     private Integer time;
-
+    private int passedScore;
+    private boolean status;
+    private int numberOfQuestion;
     public Long getId() {
         return id;
     }
@@ -49,5 +51,24 @@ public class TestDTO {
 
     public void setTime(Integer time) {
         this.time = time;
+    }
+
+    public int getPassedScore() {
+        return passedScore;
+    }
+    public void setPassedScore(int passedScore) {
+        this.passedScore = passedScore;
+    }
+    public boolean isStatus() {
+        return status;
+    }
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+    public int getNumberOfQuestion() {
+        return numberOfQuestion;
+    }
+    public void setNumberOfQuestion(int numberOfQuestion) {
+        this.numberOfQuestion = numberOfQuestion;
     }
 }

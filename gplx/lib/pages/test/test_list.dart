@@ -78,6 +78,7 @@ class _TestListPageState extends State<TestListPage> {
                     MaterialPageRoute(
                       builder: (context) => ReviewQuestionPage(
                         categoryTitle: testItems[index]['title'],
+                        testId: 1,
                       ),
                     ),
                   );

@@ -4,6 +4,7 @@ import com.demo.dtos.TestDTO;
 import com.demo.entities.Test;
 import com.demo.repositories.TestRepository;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,9 +28,9 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public List<TestDTO> findAllByType(int type) {
+    public List<TestDTO> findAllByTypeAndRankId(int type, int rankId) {
         try {
-            return modelMapper.map(testRepository.findAllByType(type), List.class);
+            return modelMapper.map(testRepository.findByTypeAndRankId(type, rankId), new TypeToken<List<TestDTO>>() {}.getType());
         }
         catch (Exception e){
             e.printStackTrace();
