@@ -3,7 +3,7 @@ import 'package:gplx/pages/review/review_signs.dart';
 import 'package:gplx/pages/review/review_test_list.dart';
 import 'package:gplx/pages/simulator/simulator_dashboard.dart';
 import 'package:gplx/pages/test/test_list.dart';
-import 'package:gplx/pages/review/review_signs.dart'; // Import the new page
+import 'package:gplx/pages/review/review_tips.dart'; // Import trang TipsPage
 
 void main() {
   runApp(MyApp());
@@ -56,7 +56,7 @@ class _DashboardPageState extends State<DashboardPage> {
       'color': Colors.blue,
     },
     {
-      'title': 'Meo ghi nhớ',
+      'title': 'Mẹo ghi nhớ',
       'icon': Icons.favorite,
       'color': Colors.purple,
     },
@@ -104,7 +104,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     color: dashboardItems[index]['color'],
                     child: InkWell(
                       onTap: () {
-                        // Chuyển hướng đến ReviewQuestionsPage khi nhấn "Ôn tập câu hỏi"
+                        // Chuyển hướng đến các trang tương ứng
                         if (dashboardItems[index]['title'] == 'Ôn tập câu hỏi') {
                           Navigator.push(
                             context,
@@ -130,7 +130,14 @@ class _DashboardPageState extends State<DashboardPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ReviewSignPage(), // Navigate to ReviewSignPage
+                              builder: (context) => ReviewSignPage(),
+                            ),
+                          );
+                        } else if (dashboardItems[index]['title'] == 'Mẹo ghi nhớ') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TipsPage(), // Chuyển hướng đến TipsPage
                             ),
                           );
                         } else {
