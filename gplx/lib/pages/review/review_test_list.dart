@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gplx/entities/test.dart';
 import 'package:gplx/models/test_api.dart';
 import 'package:gplx/pages/review/review_question.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ReviewTestListPage extends StatefulWidget {
   @override
@@ -12,8 +13,8 @@ class _ReviewTestListPageState extends State<ReviewTestListPage> {
   final testAPI = TestAPI();
 
   List<Test> tests = [];
-  List<Test> filteredTests = [];  // Danh sách tests sau khi lọc
-  String searchQuery = "";  // Biến lưu trữ từ khóa tìm kiếm
+  List<Test> filteredTests = []; // Danh sách tests sau khi lọc
+  String searchQuery = ""; // Biến lưu trữ từ khóa tìm kiếm
 
   @override
   void initState() {
@@ -23,8 +24,15 @@ class _ReviewTestListPageState extends State<ReviewTestListPage> {
 
   // Hàm tải danh sách bài kiểm tra từ API
   Future<void> loadTests() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? rankId = 2;
+    if(prefs.getInt('rankID') != null){
+      rankId = prefs.getInt('rankID');
+      print(rankId);
+    }
     try {
-      final List<Test> fetchedTests = await testAPI.findAllByType(1);
+      final List<Test> fetchedTests =
+          await testAPI.findAllByTypeAndRankId(1, rankId!);
       setState(() {
         tests = fetchedTests;
         filteredTests = tests; // Ban đầu, filteredTests bằng tests
@@ -39,7 +47,8 @@ class _ReviewTestListPageState extends State<ReviewTestListPage> {
     setState(() {
       searchQuery = query;
       if (query.isEmpty) {
-        filteredTests = tests; // Nếu không có từ khóa, hiển thị tất cả bài kiểm tra
+        filteredTests =
+            tests; // Nếu không có từ khóa, hiển thị tất cả bài kiểm tra
       } else {
         filteredTests = tests.where((test) {
           return test.title!.toLowerCase().contains(query.toLowerCase());
@@ -75,7 +84,8 @@ class _ReviewTestListPageState extends State<ReviewTestListPage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
-              onChanged: (query) => filterTests(query), // Gọi hàm lọc khi nhập vào ô tìm kiếm
+              onChanged: (query) => filterTests(query),
+              // Gọi hàm lọc khi nhập vào ô tìm kiếm
               decoration: InputDecoration(
                 hintText: 'Tìm kiếm nội dung câu hỏi',
                 prefixIcon: Icon(Icons.search),
@@ -95,13 +105,17 @@ class _ReviewTestListPageState extends State<ReviewTestListPage> {
                   child: ListTile(
                     title: Text(
                       filteredTests[index].title!,
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
                     ),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         if (filteredTests[index].description!.isNotEmpty)
-                          Text(filteredTests[index].description!),
+                          Text(
+                            filteredTests[index].description!,
+                            style: TextStyle(fontSize: 20),
+                          ),
                         SizedBox(height: 4),
                         if (true)
                           Row(
@@ -109,13 +123,17 @@ class _ReviewTestListPageState extends State<ReviewTestListPage> {
                             children: [
                               Expanded(
                                 child: LinearProgressIndicator(
-                                  value: 0.0, // Giá trị tiến độ (có thể thay đổi)
+                                  value: 0.0,
+                                  // Giá trị tiến độ (có thể thay đổi)
                                   backgroundColor: Colors.grey[300],
                                   color: Colors.blue,
                                 ),
                               ),
                               SizedBox(width: 8),
-                              Text("600"),
+                              Text(
+                                "${filteredTests[index].numberOfQuestion}",
+                                style: TextStyle(fontSize: 20),
+                              ),
                             ],
                           ),
                       ],
@@ -126,7 +144,7 @@ class _ReviewTestListPageState extends State<ReviewTestListPage> {
                         MaterialPageRoute(
                           builder: (context) => ReviewQuestionPage(
                             categoryTitle: filteredTests[index].title!,
-
+                            testId: filteredTests[index].id!,
                           ),
                         ),
                       );

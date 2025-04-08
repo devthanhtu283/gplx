@@ -1,26 +1,12 @@
-package com.demo.entities;
+package com.demo.dtos;
 
-import com.demo.entities.Test;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
 
-import java.util.List;
-
-@Entity
-@Table(name = "rank")
-public class Rank {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class RankDTO {
     private Integer id;
-
     private String name;
-
-    @Column(columnDefinition = "text")
     private String description;
-
     private boolean status;
-
-    @OneToMany(mappedBy = "rank")
-    private List<Test> tests;
 
     public Integer getId() {
         return id;
@@ -46,19 +32,11 @@ public class Rank {
         this.description = description;
     }
 
-    public boolean getStatus() {
+    public boolean isStatus() {
         return status;
     }
 
     public void setStatus(boolean status) {
         this.status = status;
-    }
-
-    public List<Test> getTests() {
-        return tests;
-    }
-
-    public void setTests(List<Test> tests) {
-        this.tests = tests;
     }
 }
