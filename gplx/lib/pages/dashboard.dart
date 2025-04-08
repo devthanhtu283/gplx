@@ -6,7 +6,9 @@ import 'package:gplx/pages/review/review_test_list.dart';
 import 'package:gplx/pages/simulator/simulator_dashboard.dart';
 import 'package:gplx/pages/test/test_list.dart';
 import 'package:gplx/pages/review/review_tips.dart'; // Import trang TipsPage
+
 import 'package:shared_preferences/shared_preferences.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -128,8 +130,9 @@ class _DashboardPageState extends State<DashboardPage> {
                     child: InkWell(
                       onTap: () {
                         // Chuyển hướng đến các trang tương ứng
-                        if (dashboardItems[index]['title'] ==
-                            'Ôn tập câu hỏi') {
+
+                        if (dashboardItems[index]['title'] == 'Ôn tập câu hỏi') {
+
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -165,8 +168,16 @@ class _DashboardPageState extends State<DashboardPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  TipsPage(), // Chuyển hướng đến TipsPage
+
+                              builder: (context) => ReviewSignPage(),
+                            ),
+                          );
+                        } else if (dashboardItems[index]['title'] == 'Mẹo ghi nhớ') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TipsPage(), // Chuyển hướng đến TipsPage
+
                             ),
                           );
                         } else {
