@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gplx/models/base_url.dart';
 import 'package:gplx/models/testDetails_api.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -24,7 +25,6 @@ class _ReviewQuestionPageState extends State<ReviewQuestionPage> {
   late Future<List<TestDetail>> testDetailsFuture; // Future để gọi API
   final TestDetailsAPI api = TestDetailsAPI();
   late ScrollController _scrollController; // Controller để điều khiển thanh trượt
-
   @override
   void initState() {
     super.initState();
@@ -93,7 +93,7 @@ class _ReviewQuestionPageState extends State<ReviewQuestionPage> {
         'answers': question?.answers?.map((answer) => answer.content ?? '').toList() ?? [],
         'correctAnswer': question?.answers?.indexWhere((answer) => answer.correct ?? false) ?? 0,
         'explanation': 'Đáp án đúng là: ${question?.answers?.firstWhere((answer) => answer.correct ?? false).content ?? "không có"}',
-        'image': question?.image, // Thêm trường image nếu cần hiển thị
+        'image': BaseUrl.imageUrl +  question!.image!, // Thêm trường image nếu cần hiển thị
       };
     }).toList();
   }

@@ -51,8 +51,11 @@ public class TestDetailsServiceImpl implements TestDetailsService {
             return new TestDetailDTO(
                     detail.getTest().getId(),
                     detail.getChapter() != null ? detail.getChapter().getId() : null,
-                    questionDTO
-            );
+                    questionDTO,
+                    detail.getTest().getTime() != null ? detail.getTest().getTime() : 0,
+                    detail.getTest().getPassedScore() != null ? detail.getTest().getPassedScore() : 0
+
+                    );
         }).collect(Collectors.toList());
     }
 
