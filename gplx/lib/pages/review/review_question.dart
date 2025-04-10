@@ -23,12 +23,21 @@ class _ReviewQuestionPageState extends State<ReviewQuestionPage> {
   bool showResult = false; // Hiển thị kết quả sau khi kiểm tra
   late Future<List<TestDetail>> testDetailsFuture; // Future để gọi API
   final TestDetailsAPI api = TestDetailsAPI();
+  late ScrollController _scrollController; // Controller để điều khiển thanh trượt
 
   @override
   void initState() {
     super.initState();
     // Gọi API để lấy danh sách TestDetail
     testDetailsFuture = api.findByTestId(widget.testId);
+    // Khởi tạo ScrollController
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose(); // Giải phóng ScrollController
+    super.dispose();
   }
 
   void checkAnswer() {
@@ -43,6 +52,7 @@ class _ReviewQuestionPageState extends State<ReviewQuestionPage> {
         currentQuestionIndex++;
         selectedAnswer = null;
         showResult = false;
+        _scrollToCurrentQuestion(); // Cuộn đến câu hỏi hiện tại
       }
     });
   }
@@ -53,8 +63,22 @@ class _ReviewQuestionPageState extends State<ReviewQuestionPage> {
         currentQuestionIndex--;
         selectedAnswer = null;
         showResult = false;
+        _scrollToCurrentQuestion(); // Cuộn đến câu hỏi hiện tại
       }
     });
+  }
+
+  // Hàm cuộn đến câu hỏi hiện tại
+  void _scrollToCurrentQuestion() {
+    if (_scrollController.hasClients) {
+      final itemWidth = 80.0; // Chiều rộng của mỗi item (ước lượng, có thể điều chỉnh)
+      final scrollPosition = currentQuestionIndex * itemWidth;
+      _scrollController.animateTo(
+        scrollPosition,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   // Danh sách câu hỏi sẽ được tạo từ dữ liệu API
@@ -116,31 +140,37 @@ class _ReviewQuestionPageState extends State<ReviewQuestionPage> {
 
           return Column(
             children: [
-              // Thanh điều hướng câu hỏi
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: List.generate(
-                    questions.length > 5 ? 5 : questions.length,
-                        (index) => GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          currentQuestionIndex = index;
-                          selectedAnswer = null;
-                          showResult = false;
-                        });
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: currentQuestionIndex == index ? Colors.pink : Colors.grey[300],
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          'Câu ${index + 1}',
-                          style: TextStyle(
-                            color: currentQuestionIndex == index ? Colors.white : Colors.black,
+              // Thanh trượt ngang cho danh sách câu hỏi
+              Container(
+                height: 50, // Chiều cao của thanh trượt
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: SingleChildScrollView(
+                  controller: _scrollController,
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: List.generate(
+                      questions.length,
+                          (index) => GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            currentQuestionIndex = index;
+                            selectedAnswer = null;
+                            showResult = false;
+                            _scrollToCurrentQuestion(); // Cuộn đến câu hỏi được chọn
+                          });
+                        },
+                        child: Container(
+                          margin: EdgeInsets.symmetric(horizontal: 4.0),
+                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: currentQuestionIndex == index ? Colors.teal : Colors.grey[300],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            'Câu ${index + 1}',
+                            style: TextStyle(
+                              color: currentQuestionIndex == index ? Colors.white : Colors.black,
+                            ),
                           ),
                         ),
                       ),
@@ -181,7 +211,9 @@ class _ReviewQuestionPageState extends State<ReviewQuestionPage> {
                             style: TextStyle(
                               color: showResult && index == currentQuestion['correctAnswer']
                                   ? Colors.green
-                                  : (showResult && selectedAnswer == index && selectedAnswer != currentQuestion['correctAnswer']
+                                  : (showResult &&
+                                  selectedAnswer == index &&
+                                  selectedAnswer != currentQuestion['correctAnswer']
                                   ? Colors.red
                                   : Colors.black),
                             ),

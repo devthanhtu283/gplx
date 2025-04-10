@@ -101,7 +101,7 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Hạng B - GPLX 2025'),
+        title: Text('Giấy Phép Lái Xe 2025'),
         actions: [
           IconButton(
             icon: Icon(Icons.settings),
