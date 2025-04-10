@@ -4,7 +4,8 @@ public class TestDetailDTO {
     private Integer testId;
     private Integer chapterId;
     private QuestionDTO question;
-
+    private int time;
+    private int passedScore;
     public TestDetailDTO() {
     }
 
@@ -36,5 +37,27 @@ public class TestDetailDTO {
 
     public void setQuestion(QuestionDTO question) {
         this.question = question;
+    }
+    public int getTime() {
+        return time;
+    }
+    public void setTime(int time) {
+        this.time = time;
+    }
+
+    public int getPassedScore() {
+        return passedScore;
+    }
+
+    public void setPassedScore(int passedScore) {
+        this.passedScore = passedScore;
+    }
+
+    public TestDetailDTO(Integer testId, Integer chapterId, QuestionDTO question, int time, int passedScore) {
+        this.testId = testId;
+        this.chapterId = chapterId;
+        this.question = question;
+        this.time = time;
+        this.passedScore = passedScore;
     }
 }
