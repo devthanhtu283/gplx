@@ -15,22 +15,52 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
   late int currentIndex;
   late VideoPlayerController _controller;
   bool _isPlaying = false;
+  int? _flaggedSecond; // Store the second where the flag is set
+  bool isCheckFlag = false;
+
+  // Scoring and color logic
+  final int videoLength = 21;
+  final int danger = 12;
+  final String fiveScore = "green";
+  final String fourScore = "blue";
+  final String threeScore = "yellow";
+  final String twoScore = "orange";
+  final String oneScore = "red";
+  final String zeroScore = "black";
+
+  late Map<int, String> colorMap;
 
   @override
   void initState() {
     super.initState();
     currentIndex = widget.initialIndex;
     _initializeVideoPlayer();
+    _initializeColorMap();
   }
 
   void _initializeVideoPlayer() {
-    // Placeholder cho video (thay bằng URL hoặc file video thực tế)
     _controller = VideoPlayerController.network(
-      'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4', // URL mẫu
+      'https://v.vnecdn.net/vnexpress/video/web/mp4/2024/03/25/th001.mp4',
     )..initialize().then((_) {
       setState(() {});
       _controller.setLooping(true);
     });
+  }
+
+  void _initializeColorMap() {
+    colorMap = {};
+    List<String> colors = [oneScore, twoScore, threeScore, fourScore, fiveScore];
+    int j = 0;
+    for (int i = danger; i > (danger - 5); i--) {
+      j++;
+      colorMap[i] = colors[j - 1];
+    }
+    // Fill remaining seconds with black
+    for (int i = 0; i < videoLength; i++) {
+      if (!colorMap.containsKey(i)) {
+        colorMap[i] = zeroScore;
+      }
+    }
   }
 
   @override
@@ -45,6 +75,7 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
         currentIndex--;
         _controller.pause();
         _isPlaying = false;
+        _flaggedSecond = null; // Reset flag when changing situation
         _initializeVideoPlayer();
       }
     });
@@ -56,6 +87,7 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
         currentIndex++;
         _controller.pause();
         _isPlaying = false;
+        _flaggedSecond = null; // Reset flag when changing situation
         _initializeVideoPlayer();
       }
     });
@@ -71,6 +103,17 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
         _isPlaying = true;
       }
     });
+  }
+
+  void _flagCurrentPosition() {
+    if(!isCheckFlag){
+      final position = _controller.value.position.inSeconds;
+      print('Video stopped at: $position seconds');
+      setState(() {
+        isCheckFlag = true;
+        _flaggedSecond = (position + 1).clamp(0, videoLength + 1); // Store the flagged second
+      });
+    }
   }
 
   @override
@@ -142,6 +185,13 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
               backgroundColor: Colors.grey[300]!,
             ),
           ),
+          // Thanh điểm số với cờ
+            isCheckFlag ? ScoreProgressBar(
+              videoLength: videoLength,
+              colorMap: colorMap,
+              controller: _controller,
+              flaggedSecond: _flaggedSecond,
+            ) : Text(""),
           // Nút điều khiển video và điều hướng
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -161,6 +211,10 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
                   _isPlaying ? Icons.pause : Icons.play_arrow,
                 ),
                 onPressed: _togglePlayPause,
+              ),
+              IconButton(
+                icon: Icon(Icons.flag),
+                onPressed: _flagCurrentPosition,
               ),
               IconButton(
                 icon: Icon(Icons.fullscreen),
@@ -213,7 +267,6 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
                       style: TextStyle(fontSize: 14, color: Colors.black87),
                     ),
                     SizedBox(height: 16),
-                    // Placeholder cho hình ảnh minh họa
                     Container(
                       height: 200,
                       width: double.infinity,
@@ -232,6 +285,96 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// Custom widget for score progress bar with flags
+class ScoreProgressBar extends StatelessWidget {
+  final int videoLength;
+  final Map<int, String> colorMap;
+  final VideoPlayerController controller;
+  final int? flaggedSecond;
+
+  const ScoreProgressBar({
+    Key? key,
+    required this.videoLength,
+    required this.colorMap,
+    required this.controller,
+    this.flaggedSecond,
+  }) : super(key: key);
+
+  Color _getColor(String colorName) {
+    switch (colorName) {
+      case 'green':
+        return Colors.green;
+      case 'blue':
+        return Colors.blue;
+      case 'yellow':
+        return Colors.yellow;
+      case 'orange':
+        return Colors.orange;
+      case 'red':
+        return Colors.red;
+      case 'black':
+      default:
+        return Colors.black;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: ValueListenableBuilder(
+        valueListenable: controller,
+        builder: (context, VideoPlayerValue value, child) {
+          final currentSecond = value.position.inSeconds.clamp(0, videoLength - 1);
+          return Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              // Progress bar segments
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List.generate(videoLength, (index) {
+                  return Expanded(
+                    child: Container(
+                      height: 10,
+                      margin: EdgeInsets.symmetric(horizontal: 1),
+                      color: _getColor(colorMap[index] ?? 'black'),
+                    ),
+                  );
+                }),
+              ),
+              // Moving flag icon (current position)
+              Positioned(
+                left: (currentSecond / videoLength) * (MediaQuery.of(context).size.width - 32) +
+                    (MediaQuery.of(context).size.width - 32) / (videoLength * 2) -
+                    12, // Center on segment
+                top: -20, // Above the bar
+                child: Icon(
+                  Icons.flag,
+                  color: Colors.red,
+                  size: 24,
+                ),
+              ),
+              // Fixed flag icon (flagged position)
+              if (flaggedSecond != null)
+                Positioned(
+                  left: (flaggedSecond! / videoLength) * (MediaQuery.of(context).size.width - 32) +
+                      (MediaQuery.of(context).size.width - 32) / (videoLength * 2) -
+                      12, // Center on flagged segment
+                  top: -40, // Above the moving flag to avoid overlap
+                  child: Icon(
+                    Icons.flag,
+                    color: Colors.deepPurple, // Different color to distinguish
+                    size: 60,
+                  ),
+                ),
+            ],
+          );
+        },
       ),
     );
   }
