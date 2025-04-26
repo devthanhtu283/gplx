@@ -106,7 +106,7 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
   }
 
   void _flagCurrentPosition() {
-    if(!isCheckFlag){
+    if (!isCheckFlag) {
       final position = _controller.value.position.inSeconds;
       print('Video stopped at: $position seconds');
       setState(() {
@@ -159,15 +159,6 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
                 aspectRatio: _controller.value.aspectRatio,
                 child: VideoPlayer(_controller),
               ),
-              Text(
-                'Điểm đánh giá: 5/5',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  backgroundColor: Colors.black54,
-                ),
-              ),
             ],
           )
               : Container(
@@ -186,12 +177,14 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
             ),
           ),
           // Thanh điểm số với cờ
-            isCheckFlag ? ScoreProgressBar(
-              videoLength: videoLength,
-              colorMap: colorMap,
-              controller: _controller,
-              flaggedSecond: _flaggedSecond,
-            ) : Text(""),
+          isCheckFlag
+              ? ScoreProgressBar(
+            videoLength: videoLength,
+            colorMap: colorMap,
+            controller: _controller,
+            flaggedSecond: _flaggedSecond,
+          )
+              : Text(""),
           // Nút điều khiển video và điều hướng
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -203,6 +196,8 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
                   _controller.play();
                   setState(() {
                     _isPlaying = true;
+                    _flaggedSecond = null; // Reset flagged second
+                    isCheckFlag = false; // Hide score progress bar
                   });
                 },
               ),
@@ -213,20 +208,12 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
                 onPressed: _togglePlayPause,
               ),
               IconButton(
-                icon: Icon(Icons.flag),
+                icon: Icon(Icons.menu),
                 onPressed: _flagCurrentPosition,
-              ),
-              IconButton(
-                icon: Icon(Icons.fullscreen),
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Mở toàn màn hình')),
-                  );
-                },
               ),
             ],
           ),
-          // Nút điều hướng qua lại
+          // Nút điều hướng qua lại và nút cờ
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -237,6 +224,15 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
                   foregroundColor: Colors.black,
                 ),
                 child: Icon(Icons.arrow_left),
+              ),
+              SizedBox(width: 16),
+              ElevatedButton(
+                onPressed: _flagCurrentPosition,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.cyanAccent,
+                  foregroundColor: Colors.black,
+                ),
+                child: Icon(Icons.flag),
               ),
               SizedBox(width: 16),
               ElevatedButton(
