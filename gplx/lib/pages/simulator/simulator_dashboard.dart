@@ -29,14 +29,10 @@ class _SimulationDashboardPageState extends State<SimulationDashboardPage> {
       'icon': Icons.bookmark,
       'color': Colors.red,
     },
+
     {
-      'title': 'Tải trước nội dung',
-      'icon': Icons.download,
-      'color': Colors.blue,
-    },
-    {
-      'title': 'Ôn thi 600 câu hỏi',
-      'icon': Icons.book,
+      'title': 'Trở về Lý thuyết',
+      'icon': Icons.list_alt,
       'color': Colors.white,
     },
   ];
@@ -45,7 +41,7 @@ class _SimulationDashboardPageState extends State<SimulationDashboardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Ôn thi 120 THGT v2.0'),
+        title: Text('Ôn thi 120 THGT'),
         actions: [
           IconButton(
             icon: Icon(Icons.settings),
@@ -182,16 +178,7 @@ class _SimulationDashboardPageState extends State<SimulationDashboardPage> {
         ),
       ),
       // Banner quảng cáo ở dưới cùng
-      bottomNavigationBar: Container(
-        height: 60,
-        color: Colors.white,
-        child: Center(
-          child: Text(
-            'Quảng cáo: ShopeeFood - 4.9 ★ MIỄN PHÍ',
-            style: TextStyle(fontSize: 14, color: Colors.black),
-          ),
-        ),
-      ),
+
     );
   }
 }

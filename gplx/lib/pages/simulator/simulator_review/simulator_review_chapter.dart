@@ -1,33 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:gplx/models/chapter_simulator.dart';
+import 'package:gplx/entities/Simulator.dart'; // Entity Simulator
 import 'package:gplx/pages/simulator/simulator_review/situation_detail.dart';
 
 class SimulatorReviewChapterPage extends StatefulWidget {
-  final String chapterTitle; // Tiêu đề của chương
+  final int chapterId; // Đã khai báo chapterId
+  final String chapterTitle;
 
-  SimulatorReviewChapterPage({required this.chapterTitle});
+  // Constructor sửa lại để đảm bảo truyền tham số đúng cách
+  const SimulatorReviewChapterPage({
+    Key? key,
+    required this.chapterId,
+    required this.chapterTitle,
+  }) : super(key: key);
 
   @override
   _SimulatorReviewChapterPageState createState() => _SimulatorReviewChapterPageState();
 }
 
 class _SimulatorReviewChapterPageState extends State<SimulatorReviewChapterPage> {
-  // Danh sách các tình huống mô phỏng
-  final List<Map<String, dynamic>> situations = [
-    {
-      'title': 'Người đi bộ sang đường bị khuất sau xe tải',
-      'description':
-      'Nhấn SPACE ngay khi phát hiện có người đi bộ sang đường xuất hiện ngay sau đuôi xe tải.',
-      'image': 'assets/images/situation1.jpg', // Placeholder cho hình ảnh
-      'difficulty': 5, // Độ khó (5 sao)
-    },
-    {
-      'title': 'Người đi bộ vượt đèn đỏ sang đường',
-      'description':
-      'Nhấn SPACE khi người đi bộ không dừng lại tại đảo phân cách giữa đường mà tiếp tục bước sang đường.',
-      'image': 'assets/images/situation2.jpg', // Placeholder cho hình ảnh
-      'difficulty': 5, // Độ khó (5 sao)
-    },
-  ];
+  List<Simulator> situations = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchSituations();
+  }
+
+  Future<void> fetchSituations() async {
+    try {
+      final api = ChapterSimulatorAPI();
+      final data = await api.findSituationsByChapterId(widget.chapterId);
+      setState(() {
+        situations = data;
+        isLoading = false;
+      });
+    } catch (e) {
+      print('Error fetching situations: $e');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,21 +56,31 @@ class _SimulatorReviewChapterPageState extends State<SimulatorReviewChapterPage>
           },
         ),
       ),
-      body: ListView.builder(
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : situations.isEmpty
+          ? Center(child: Text('Không có tình huống nào.'))
+          : ListView.builder(
         padding: EdgeInsets.all(16.0),
         itemCount: situations.length,
         itemBuilder: (context, index) {
+          final situation = situations[index];
           return Card(
             margin: EdgeInsets.only(bottom: 16.0),
             child: InkWell(
               onTap: () {
-                // Chuyển hướng đến SituationDetailPage khi nhấn vào tình huống
+                // Khi nhấn vào tình huống
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => SituationDetailPage(
                       initialIndex: index,
-                      situations: situations,
+                      situations: situations.map((s) => {
+                        'title': s.title,
+                        'description': s.description,
+                        'image': s.image, // Nếu API có image
+                        'difficulty': 5, // Tạm fix 5 sao (vì API chưa có difficulty)
+                      }).toList(),
                     ),
                   ),
                 );
@@ -88,7 +113,7 @@ class _SimulatorReviewChapterPageState extends State<SimulatorReviewChapterPage>
                         SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            situations[index]['title'],
+                            situation.title,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -100,7 +125,7 @@ class _SimulatorReviewChapterPageState extends State<SimulatorReviewChapterPage>
                     SizedBox(height: 8),
                     Row(
                       children: List.generate(
-                        situations[index]['difficulty'],
+                        5, // Tạm 5 sao hết (hoặc sau này map theo situation.difficulty)
                             (i) => Icon(
                           Icons.star,
                           color: Colors.grey,
@@ -110,20 +135,28 @@ class _SimulatorReviewChapterPageState extends State<SimulatorReviewChapterPage>
                     ),
                     SizedBox(height: 8),
                     Text(
-                      situations[index]['description'],
+                      situation.description,
                       style: TextStyle(fontSize: 14, color: Colors.black87),
                     ),
                     SizedBox(height: 8),
-                    Container(
+                    situation.image.isNotEmpty
+                        ? Container(
+                      height: 200,
+                      width: double.infinity,
+                      child: Image.network(
+                        situation.image,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Center(
+                          child: Text('Không tải được ảnh'),
+                        ),
+                      ),
+                    )
+                        : Container(
                       height: 200,
                       width: double.infinity,
                       color: Colors.grey[300],
                       child: Center(
-                        child: Text(
-                          'Hình ảnh minh họa\n(${situations[index]['image']})',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.black54),
-                        ),
+                        child: Text('Không có hình ảnh minh họa'),
                       ),
                     ),
                   ],

@@ -169,7 +169,7 @@ class _DashboardPageState extends State<DashboardPage> {
                             context,
                             MaterialPageRoute(
 
-                              builder: (context) => ReviewSignPage(),
+                              builder: (context) =>  TipsPage(),
                             ),
                           );
                         } else if (dashboardItems[index]['title'] == 'Mẹo ghi nhớ') {
@@ -262,7 +262,7 @@ class _DashboardPageState extends State<DashboardPage> {
             },
           );
         },
-        child: Icon(Icons.category),
+        child: Text("Hạng"),
         tooltip: 'Chọn hạng GPLX',
       ),
     );
