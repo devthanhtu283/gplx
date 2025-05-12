@@ -60,59 +60,59 @@ class _SimulationDashboardPageState extends State<SimulationDashboardPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Phần thông số
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Số tình huống',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      '0/120',
-                      style: TextStyle(fontSize: 16, color: Colors.purple),
-                    ),
-                    SizedBox(height: 16),
-                    Text(
-                      'Thi ngẫu nhiên',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      '0',
-                      style: TextStyle(fontSize: 16, color: Colors.purple),
-                    ),
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Điểm trung bình',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      '0/50',
-                      style: TextStyle(fontSize: 16, color: Colors.red),
-                    ),
-                    SizedBox(height: 16),
-                    Text(
-                      'Thi theo bộ đề',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      '0/12',
-                      style: TextStyle(fontSize: 16, color: Colors.red),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   children: [
+            //     Column(
+            //       crossAxisAlignment: CrossAxisAlignment.start,
+            //       children: [
+            //         Text(
+            //           'Số tình huống',
+            //           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            //         ),
+            //         SizedBox(height: 4),
+            //         Text(
+            //           '0/120',
+            //           style: TextStyle(fontSize: 16, color: Colors.purple),
+            //         ),
+            //         SizedBox(height: 16),
+            //         Text(
+            //           'Thi ngẫu nhiên',
+            //           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            //         ),
+            //         SizedBox(height: 4),
+            //         Text(
+            //           '0',
+            //           style: TextStyle(fontSize: 16, color: Colors.purple),
+            //         ),
+            //       ],
+            //     ),
+            //     Column(
+            //       crossAxisAlignment: CrossAxisAlignment.start,
+            //       children: [
+            //         Text(
+            //           'Điểm trung bình',
+            //           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            //         ),
+            //         SizedBox(height: 4),
+            //         Text(
+            //           '0/50',
+            //           style: TextStyle(fontSize: 16, color: Colors.red),
+            //         ),
+            //         SizedBox(height: 16),
+            //         Text(
+            //           'Thi theo bộ đề',
+            //           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            //         ),
+            //         SizedBox(height: 4),
+            //         Text(
+            //           '0/12',
+            //           style: TextStyle(fontSize: 16, color: Colors.red),
+            //         ),
+            //       ],
+            //     ),
+            //   ],
+            // ),
             SizedBox(height: 16),
             // Phần danh sách các nút chức năng
             Expanded(

@@ -69,18 +69,13 @@ class _SimulatorReviewChapterPageState extends State<SimulatorReviewChapterPage>
             margin: EdgeInsets.only(bottom: 16.0),
             child: InkWell(
               onTap: () {
-                // Khi nhấn vào tình huống
+                // Không cần gọi API findSimulatorById, sử dụng danh sách situations hiện có
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => SituationDetailPage(
-                      initialIndex: index,
-                      situations: situations.map((s) => {
-                        'title': s.title,
-                        'description': s.description,
-                        'image': s.image, // Nếu API có image
-                        'difficulty': 5, // Tạm fix 5 sao (vì API chưa có difficulty)
-                      }).toList(),
+                      situations: situations, // Truyền toàn bộ danh sách situations
+                      initialIndex: index, // Vị trí của situation được click
                     ),
                   ),
                 );
