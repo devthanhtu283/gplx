@@ -1,26 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:gplx/entities/Simulator.dart';
 import 'package:video_player/video_player.dart';
 
 class SituationDetailPage extends StatefulWidget {
-  final int initialIndex; // Chỉ số tình huống ban đầu
-  final List<Map<String, dynamic>> situations; // Danh sách các tình huống
+  final List<Simulator> situations; // Danh sách các tình huống
+  final int initialIndex; // Vị trí tình huống ban đầu
 
-  SituationDetailPage({required this.initialIndex, required this.situations});
+
+  const SituationDetailPage({
+    Key? key,
+    required this.situations,
+    required this.initialIndex,
+  }) : super(key: key);
 
   @override
   _SituationDetailPageState createState() => _SituationDetailPageState();
 }
 
 class _SituationDetailPageState extends State<SituationDetailPage> {
-  late int currentIndex;
   late VideoPlayerController _controller;
   bool _isPlaying = false;
-  int? _flaggedSecond; // Store the second where the flag is set
+  int? _flaggedSecond;
   bool isCheckFlag = false;
+  bool _showGuide = false;
 
-  // Scoring and color logic
-  final int videoLength = 21;
-  final int danger = 12;
+  late int videoLength;
+  late int dangerSecond;
+  late int currentIndex; // Theo dõi tình huống hiện tại
+
+  int? _score;
+
   final String fiveScore = "green";
   final String fourScore = "blue";
   final String threeScore = "yellow";
@@ -28,19 +37,23 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
   final String oneScore = "red";
   final String zeroScore = "black";
 
+
+
   late Map<int, String> colorMap;
 
   @override
   void initState() {
     super.initState();
-    currentIndex = widget.initialIndex;
+    currentIndex = widget.initialIndex; // Khởi tạo chỉ số tình huống
+    videoLength = widget.situations[currentIndex].videoLength;
+    dangerSecond = widget.situations[currentIndex].dangerSecond;
     _initializeVideoPlayer();
     _initializeColorMap();
   }
 
   void _initializeVideoPlayer() {
     _controller = VideoPlayerController.network(
-      'https://v.vnecdn.net/vnexpress/video/web/mp4/2024/03/25/th001.mp4',
+      widget.situations[currentIndex].videoLink,
     )..initialize().then((_) {
       setState(() {});
       _controller.setLooping(true);
@@ -51,11 +64,10 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
     colorMap = {};
     List<String> colors = [oneScore, twoScore, threeScore, fourScore, fiveScore];
     int j = 0;
-    for (int i = danger; i > (danger - 5); i--) {
+    for (int i = dangerSecond; i > (dangerSecond - 5); i--) {
       j++;
       colorMap[i] = colors[j - 1];
     }
-    // Fill remaining seconds with black
     for (int i = 0; i < videoLength; i++) {
       if (!colorMap.containsKey(i)) {
         colorMap[i] = zeroScore;
@@ -67,30 +79,6 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
   void dispose() {
     _controller.dispose();
     super.dispose();
-  }
-
-  void _previousSituation() {
-    setState(() {
-      if (currentIndex > 0) {
-        currentIndex--;
-        _controller.pause();
-        _isPlaying = false;
-        _flaggedSecond = null; // Reset flag when changing situation
-        _initializeVideoPlayer();
-      }
-    });
-  }
-
-  void _nextSituation() {
-    setState(() {
-      if (currentIndex < widget.situations.length - 1) {
-        currentIndex++;
-        _controller.pause();
-        _isPlaying = false;
-        _flaggedSecond = null; // Reset flag when changing situation
-        _initializeVideoPlayer();
-      }
-    });
   }
 
   void _togglePlayPause() {
@@ -105,68 +93,104 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
     });
   }
 
+  int _calculateScore(int flaggedSecond) {
+    final color = colorMap[flaggedSecond];
+    switch (color) {
+      case 'green':
+        return 5;
+      case 'blue':
+        return 4;
+      case 'yellow':
+        return 3;
+      case 'orange':
+        return 2;
+      case 'red':
+        return 1;
+      default:
+        return 0; // black hoặc null đều được xem là 0 điểm
+    }
+  }
+
+
   void _flagCurrentPosition() {
     if (!isCheckFlag) {
       final position = _controller.value.position.inSeconds;
-      print('Video stopped at: $position seconds');
+      final clampedPosition = position.clamp(0, videoLength - 1); // Đảm bảo hợp lệ
+      final score = _calculateScore(clampedPosition); // 🎯 Tính điểm
+
+      print('Người dùng gắn cờ tại: $clampedPosition giây -> Điểm: $score');
+
       setState(() {
         isCheckFlag = true;
-        _flaggedSecond = (position + 1).clamp(0, videoLength + 1); // Store the flagged second
+        _flaggedSecond = clampedPosition;
+        _score = score;
+        // Bạn có thể lưu `score` vào một biến state nếu muốn hiển thị
       });
     }
   }
 
+
+  void _toggleGuideVisibility() {
+    setState(() {
+      _showGuide = !_showGuide;
+    });
+  }
+
+  void _previousSituation() {
+    if (currentIndex > 0) {
+      setState(() {
+        currentIndex--;
+        _resetVideo();
+      });
+    }
+  }
+
+  void _nextSituation() {
+    if (currentIndex < widget.situations.length - 1) {
+      setState(() {
+        currentIndex++;
+        _resetVideo();
+      });
+    }
+  }
+
+  void _resetVideo() {
+    _controller.dispose();
+    videoLength = widget.situations[currentIndex].videoLength;
+    dangerSecond = widget.situations[currentIndex].dangerSecond;
+    _initializeVideoPlayer();
+    _initializeColorMap();
+    _isPlaying = false;
+    _flaggedSecond = null;
+    isCheckFlag = false;
+    _showGuide = false;
+    _score = null;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final currentSituation = widget.situations[currentIndex];
+    final simulator = widget.situations[currentIndex];
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('${currentIndex + 1}: ${currentSituation['title'].split(':')[0]}...'),
+        title: Text(simulator.title),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.share),
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Chia sẻ tình huống')),
-              );
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.menu),
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Mở menu')),
-              );
-            },
-          ),
-        ],
       ),
       body: Column(
         children: [
-          // Phần video
           _controller.value.isInitialized
-              ? Stack(
-            alignment: Alignment.center,
-            children: [
-              AspectRatio(
-                aspectRatio: _controller.value.aspectRatio,
-                child: VideoPlayer(_controller),
-              ),
-            ],
+              ? AspectRatio(
+            aspectRatio: _controller.value.aspectRatio,
+            child: VideoPlayer(_controller),
           )
               : Container(
             height: 200,
             color: Colors.grey[300],
-            child: Center(child: CircularProgressIndicator()),
+            child: const Center(child: CircularProgressIndicator()),
           ),
-          // Thanh tiến độ video
           VideoProgressIndicator(
             _controller,
             allowScrubbing: true,
@@ -176,7 +200,6 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
               backgroundColor: Colors.grey[300]!,
             ),
           ),
-          // Thanh điểm số với cờ
           isCheckFlag
               ? ScoreProgressBar(
             videoLength: videoLength,
@@ -184,98 +207,126 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
             controller: _controller,
             flaggedSecond: _flaggedSecond,
           )
-              : Text(""),
-          // Nút điều khiển video và điều hướng
+              : const SizedBox(height: 10),
+          // Nút điều khiển video
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconButton(
-                icon: Icon(Icons.replay),
+                icon: const Icon(Icons.replay),
                 onPressed: () {
                   _controller.seekTo(Duration.zero);
                   _controller.play();
                   setState(() {
                     _isPlaying = true;
-                    _flaggedSecond = null; // Reset flagged second
-                    isCheckFlag = false; // Hide score progress bar
+                    _flaggedSecond = null;
+                    isCheckFlag = false;
+                    _score = null;
                   });
                 },
               ),
               IconButton(
-                icon: Icon(
-                  _isPlaying ? Icons.pause : Icons.play_arrow,
-                ),
+                icon: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
                 onPressed: _togglePlayPause,
               ),
               IconButton(
-                icon: Icon(Icons.menu),
-                onPressed: _flagCurrentPosition,
+                icon: const Icon(Icons.menu),
+                onPressed: _toggleGuideVisibility,
               ),
             ],
           ),
-          // Nút điều hướng qua lại và nút cờ
+          // Nút điều hướng và gắn cờ
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ElevatedButton(
                 onPressed: currentIndex > 0 ? _previousSituation : null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.yellow,
+                  backgroundColor: currentIndex > 0 ? Colors.yellow : Colors.grey,
                   foregroundColor: Colors.black,
                 ),
-                child: Icon(Icons.arrow_left),
+                child: const Text("Câu trước"),
               ),
-              SizedBox(width: 16),
+              const SizedBox(width: 16),
               ElevatedButton(
                 onPressed: _flagCurrentPosition,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.cyanAccent,
                   foregroundColor: Colors.black,
                 ),
-                child: Icon(Icons.flag),
+                child: const Text("Gắn cờ"),
               ),
-              SizedBox(width: 16),
+              const SizedBox(width: 16),
               ElevatedButton(
                 onPressed: currentIndex < widget.situations.length - 1 ? _nextSituation : null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.yellow,
+                  backgroundColor: currentIndex < widget.situations.length - 1 ? Colors.yellow : Colors.grey,
                   foregroundColor: Colors.black,
                 ),
-                child: Icon(Icons.arrow_right),
+                child: const Text("Câu sau"),
               ),
             ],
           ),
-          // Phần mô tả tình huống
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Tình huống ${currentIndex + 1}: ${currentSituation['title']}',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      currentSituation['description'],
-                      style: TextStyle(fontSize: 14, color: Colors.black87),
-                    ),
-                    SizedBox(height: 16),
-                    Container(
-                      height: 200,
-                      width: double.infinity,
-                      color: Colors.grey[300],
-                      child: Center(
-                        child: Text(
-                          'Hình ảnh minh họa\n(${currentSituation['image']})',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.black54),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            simulator.title,
+                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                          if (_score != null)
+                            Text("Điểm của bạn: $_score", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+
+                          const SizedBox(height: 8),
+                          Text(
+                            simulator.description,
+                            style: const TextStyle(fontSize: 14, color: Colors.black87),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      AnimatedSize(
+                        duration: const Duration(milliseconds: 300),
+                        child: Visibility(
+                          visible: _showGuide,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 16),
+                              const Text(
+                                "Hướng dẫn:",
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                simulator.guideDescription,
+                                style: const TextStyle(fontSize: 14),
+                              ),
+                              const SizedBox(height: 8),
+                              Image.network(
+                                simulator.guideImage,
+                                height: 200,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return const Text("Không thể tải hình ảnh hướng dẫn");
+                                },
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -285,8 +336,6 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
     );
   }
 }
-
-// Custom widget for score progress bar with flags
 class ScoreProgressBar extends StatelessWidget {
   final int videoLength;
   final Map<int, String> colorMap;
@@ -322,53 +371,65 @@ class ScoreProgressBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 8.0), // Giữ padding dọc
       child: ValueListenableBuilder(
         valueListenable: controller,
         builder: (context, VideoPlayerValue value, child) {
+          final screenWidth = MediaQuery.of(context).size.width; // Lấy toàn bộ chiều rộng màn hình
           final currentSecond = value.position.inSeconds.clamp(0, videoLength - 1);
-          return Stack(
-            alignment: Alignment.topCenter,
-            children: [
-              // Progress bar segments
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: List.generate(videoLength, (index) {
-                  return Expanded(
-                    child: Container(
-                      height: 10,
-                      margin: EdgeInsets.symmetric(horizontal: 1),
-                      color: _getColor(colorMap[index] ?? 'black'),
-                    ),
-                  );
-                }),
-              ),
-              // Moving flag icon (current position)
-              Positioned(
-                left: (currentSecond / videoLength) * (MediaQuery.of(context).size.width - 32) +
-                    (MediaQuery.of(context).size.width - 32) / (videoLength * 2) -
-                    12, // Center on segment
-                top: -20, // Above the bar
-                child: Icon(
-                  Icons.flag,
-                  color: Colors.red,
-                  size: 24,
-                ),
-              ),
-              // Fixed flag icon (flagged position)
-              if (flaggedSecond != null)
+          const spacing = 0.1; // Khoảng cách giữa các đoạn (tăng để dễ nhìn)
+          final baseSegmentWidth = screenWidth / videoLength; // Chiều rộng cơ bản mỗi giây
+          final adjustedSegmentWidth = baseSegmentWidth - spacing; // Điều chỉnh chiều rộng để thêm padding
+
+          return SizedBox(
+            width: screenWidth, // Đảm bảo bao phủ toàn bộ chiều rộng
+            height: 45, // Tăng chiều cao của Stack để chứa lá cờ lớn hơn
+            child: Stack(
+              alignment: Alignment.topLeft,
+              clipBehavior: Clip.none, // Đảm bảo lá cờ không bị cắt
+              children: [
+                // Thanh tiến trình với các đoạn màu
                 Positioned(
-                  left: (flaggedSecond! / videoLength) * (MediaQuery.of(context).size.width - 32) +
-                      (MediaQuery.of(context).size.width - 32) / (videoLength * 2) -
-                      12, // Center on flagged segment
-                  top: -40, // Above the moving flag to avoid overlap
-                  child: Icon(
-                    Icons.flag,
-                    color: Colors.deepPurple, // Different color to distinguish
-                    size: 60,
+                  top: 25, // Đẩy thanh tiến trình xuống để có không gian cho lá cờ lớn
+                  left: 0,
+                  right: 0,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max, // Đảm bảo Row chiếm toàn bộ chiều rộng
+                    children: List.generate(videoLength, (index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: spacing / 2), // Thêm padding giữa các đoạn
+                        child: Container(
+                          width: adjustedSegmentWidth, // Sử dụng chiều rộng đã điều chỉnh
+                          height: 10,
+                          color: _getColor(colorMap[index] ?? 'black'),
+                        ),
+                      );
+                    }),
                   ),
                 ),
-            ],
+                // Cờ hiện tại (vị trí phát video)
+                // Positioned(
+                //   left: (currentSecond * baseSegmentWidth),
+                //   top: 5, // Điều chỉnh vị trí để lá cờ hiển thị đầy đủ
+                //   child: const Icon(
+                //     Icons.flag,
+                //     color: Colors.red,
+                //     size: 40, // Tăng kích thước để dễ nhìn
+                //   ),
+                // ),
+                // Cờ người dùng gắn
+                if (flaggedSecond != null)
+                  Positioned(
+                    left: (flaggedSecond! * baseSegmentWidth),
+                    top: -8, // Điều chỉnh vị trí để lá cờ hiển thị đầy đủ
+                    child: const Icon(
+                      Icons.flag,
+                      color: Colors.purpleAccent,
+                      size: 40, // Tăng kích thước để dễ nhìn hơn
+                    ),
+                  ),
+              ],
+            ),
           );
         },
       ),

@@ -26,4 +26,15 @@ class ChapterSimulatorAPI {
       throw Exception("Bad request when getting situations");
     }
   }
+  Future<Simulator> findSimulatorById(int simulatorId) async {
+    var response = await http.get(Uri.parse(BaseUrl.url + "chapter_simulator/findBySimulatorId/$simulatorId"));
+    if (response.statusCode == 200) {
+      dynamic res = jsonDecode(utf8.decode(response.bodyBytes));
+      return Simulator.fromMap(res);
+    } else {
+      throw Exception("Bad request when getting simulator by ID");
+    }
+  }
+
+
 }

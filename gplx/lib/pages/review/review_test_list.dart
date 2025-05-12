@@ -61,7 +61,7 @@ class _ReviewTestListPageState extends State<ReviewTestListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Hạng B - Ôn 600 câu'),
+        title: Text('Lý thuyết GPLX 2025'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {

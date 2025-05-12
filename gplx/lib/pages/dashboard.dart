@@ -121,7 +121,8 @@ class _DashboardPageState extends State<DashboardPage> {
                   crossAxisCount: 2,
                   crossAxisSpacing: 8.0,
                   mainAxisSpacing: 8.0,
-                  childAspectRatio: 1.0,
+                  childAspectRatio: 1.03,
+
                 ),
                 itemCount: dashboardItems.length,
                 itemBuilder: (context, index) {
@@ -265,6 +266,7 @@ class _DashboardPageState extends State<DashboardPage> {
         child: Text("Hạng"),
         tooltip: 'Chọn hạng GPLX',
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
     );
   }
 }
