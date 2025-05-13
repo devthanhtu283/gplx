@@ -48,5 +48,61 @@ public class QuestionServiceImpl implements QuestionService {
         }).collect(Collectors.toList());
     }
 
+    @Override
+    public List<QuestionDTO> findFailedQuestion() {
+        List<Question> failedQuestions = questionRepository.findAllFailedQuestions();
 
+        return failedQuestions.stream().map(question -> {
+            QuestionDTO dto = modelMapper.map(question, QuestionDTO.class);
+
+            // Map danh sách Answer → AnswerDTO
+            List<AnswerDTO> answerDTOs = question.getAnswers().stream().map(answer -> {
+                AnswerDTO aDto = new AnswerDTO();
+                aDto.setId(answer.getId());
+                aDto.setContent(answer.getContent());
+                aDto.setCorrect(answer.isCorrect());
+                aDto.setStatus(answer.isStatus());
+                return aDto;
+            }).collect(Collectors.toList());
+
+            dto.setAnswers(answerDTOs);
+
+            // ✅ Lấy ra id của đáp án đúng (nếu có)
+            question.getAnswers().stream()
+                    .filter(Answer::isCorrect)
+                    .findFirst()
+                    .ifPresent(correct -> dto.setCorrectAnswer(correct.getId()));
+
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<QuestionDTO> findFailedQuestionByRank() {
+        List<Question> failedQuestions = questionRepository.findAllFailedQuestionsByRank();
+
+        return failedQuestions.stream().map(question -> {
+            QuestionDTO dto = modelMapper.map(question, QuestionDTO.class);
+
+            // Map danh sách Answer → AnswerDTO
+            List<AnswerDTO> answerDTOs = question.getAnswers().stream().map(answer -> {
+                AnswerDTO aDto = new AnswerDTO();
+                aDto.setId(answer.getId());
+                aDto.setContent(answer.getContent());
+                aDto.setCorrect(answer.isCorrect());
+                aDto.setStatus(answer.isStatus());
+                return aDto;
+            }).collect(Collectors.toList());
+
+            dto.setAnswers(answerDTOs);
+
+            // ✅ Lấy ra id của đáp án đúng (nếu có)
+            question.getAnswers().stream()
+                    .filter(Answer::isCorrect)
+                    .findFirst()
+                    .ifPresent(correct -> dto.setCorrectAnswer(correct.getId()));
+
+            return dto;
+        }).collect(Collectors.toList());
+    }
 }

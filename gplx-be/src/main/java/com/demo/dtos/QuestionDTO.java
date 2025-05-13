@@ -12,7 +12,9 @@ public class QuestionDTO {
     private String content;
     private boolean isFailed;
     private String image;
+    private String explain;
     private boolean status;
+    private boolean isRankA;
     private List<AnswerDTO> answers;
     private Integer correctAnswer;
 
@@ -70,5 +72,21 @@ public class QuestionDTO {
 
     public void setCorrectAnswer(Integer correctAnswer) {
         this.correctAnswer = correctAnswer;
+    }
+
+    public boolean isRankA() {
+        return isRankA;
+    }
+
+    public void setRankA(boolean rankA) {
+        isRankA = rankA;
+    }
+
+    public String getExplain() {
+        return explain;
+    }
+
+    public void setExplain(String explain) {
+        this.explain = explain;
     }
 }

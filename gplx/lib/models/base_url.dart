@@ -1,5 +1,5 @@
 class BaseUrl{
-  static String ipAddress = "192.168.1.110";
+  static String ipAddress = "192.168.1.15";
   static String url="http://" + ipAddress +  ":8080/api/";
   static String imageUrl = "http://" + ipAddress +  ":8080/assets/images/";
  /* static String be_url="http://192.168.1.10:8087/assets/images/";

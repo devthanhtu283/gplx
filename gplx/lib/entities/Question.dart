@@ -1,20 +1,23 @@
 import 'package:gplx/entities/Answer.dart';
+
 class Question {
   int? id;
   String? content;
   String? image;
+  bool? failed; // Thay failed bằng is_failed
+  String? explain; // Thêm trường explain
   bool? status;
-  bool? failed;
-  int? correctAnswer;
+  bool? isRankA;  // Thêm trường is_rankA
   List<Answer>? answers;
 
   Question({
     this.id,
     this.content,
     this.image,
-    this.status,
     this.failed,
-    this.correctAnswer,
+    this.explain,
+    this.status,
+    this.isRankA,
     this.answers,
   });
 
@@ -24,9 +27,10 @@ class Question {
       id: map['id'] as int?,
       content: map['content'] as String?,
       image: map['image'] as String?,
-      status: map['status'] as bool?,
-      failed: map['failed'] as bool?,
-      correctAnswer: map['correctAnswer'] as int?,
+      failed: map['is_failed'] == 1, // Chuyển tinyint(1) thành boolean (1 = true, 0 = false)
+      explain: map['explain'] as String?, // Thêm ánh xạ cho explain
+      status: map['status'] == 1, // Chuyển tinyint(1) thành boolean
+      isRankA: map['is_rankA'] == 1, // Chuyển tinyint(1) thành boolean
       answers: (map['answers'] as List<dynamic>?)
           ?.map((e) => Answer.fromMap(e))
           .toList(),
@@ -39,9 +43,10 @@ class Question {
       'id': id,
       'content': content,
       'image': image,
-      'status': status,
-      'failed': failed,
-      'correctAnswer': correctAnswer,
+      'is_failed': failed == true ? 1 : 0, // Chuyển boolean thành 1 hoặc 0
+      'explain': explain, // Thêm explain vào map
+      'status': status == true ? 1 : 0, // Chuyển boolean thành 1 hoặc 0
+      'is_rankA': isRankA == true ? 1 : 0, // Chuyển boolean thành 1 hoặc 0
       'answers': answers?.map((e) => e.toMap()).toList(),
     };
   }

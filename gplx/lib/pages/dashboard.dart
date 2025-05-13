@@ -3,6 +3,7 @@ import 'package:gplx/entities/Rank.dart';
 import 'package:gplx/models/test_api.dart';
 import 'package:gplx/pages/review/review_signs.dart';
 import 'package:gplx/pages/review/review_test_list.dart';
+import 'package:gplx/pages/review/review_failed_list.dart';
 import 'package:gplx/pages/simulator/simulator_dashboard.dart';
 import 'package:gplx/pages/test/test_list.dart';
 import 'package:gplx/pages/review/review_tips.dart'; // Import trang TipsPage
@@ -67,7 +68,7 @@ class _DashboardPageState extends State<DashboardPage> {
       'color': Colors.purple,
     },
     {
-      'title': '60 câu điểm liệt',
+      'title': 'Câu điểm liệt',
       'icon': Icons.shield,
       'color': Colors.brown,
     },
@@ -149,6 +150,14 @@ class _DashboardPageState extends State<DashboardPage> {
                             ),
                           );
                         } else if (dashboardItems[index]['title'] ==
+                            'Câu điểm liệt') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ReviewFailedListPage(),
+                            ),
+                          );
+                        }else if (dashboardItems[index]['title'] ==
                             '120 câu mô phỏng') {
                           Navigator.push(
                             context,
