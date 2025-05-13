@@ -20,7 +20,13 @@ public class Question {
     @Column(columnDefinition = "text")
     private String image;
 
+    @Column(name = "explain")
+    private String explain;
+
     private boolean status;
+
+    @Column(name = "is_rankA")
+    private boolean isRankA;
 
     @OneToMany(mappedBy = "question")
     private List<Answer> answers;
@@ -82,5 +88,21 @@ public class Question {
 
     public void setTestDetails(List<TestDetails> testDetails) {
         this.testDetails = testDetails;
+    }
+
+    public boolean getIsRankA() {
+        return isRankA;
+    }
+
+    public void setRankA(boolean rankA) {
+        isRankA = rankA;
+    }
+
+    public String getExplain() {
+        return explain;
+    }
+
+    public void setExplain(String explain) {
+        this.explain = explain;
     }
 }

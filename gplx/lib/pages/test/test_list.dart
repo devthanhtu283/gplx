@@ -36,6 +36,7 @@ class _TestListPageState extends State<TestListPage> {
     }
 
     try {
+
       final List<Test> fetchedTests = await testAPI.findAllByTypeAndRankId(2, rankId!);
       // Tải kết quả từ SharedPreferences
       Map<int, Map<String, dynamic>> results = {};
