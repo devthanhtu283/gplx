@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:gplx/entities/Rank.dart';
 import 'package:gplx/entities/TestDetail.dart';
-import 'package:gplx/entities/test.dart';
+import 'package:gplx/entities/Test.dart';
 import 'package:gplx/models/base_url.dart';
 import 'package:http/http.dart' as http;
 class TestDetailsAPI {

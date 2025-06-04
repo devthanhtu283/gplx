@@ -4,12 +4,14 @@ class ChapterSimulator {
   final String title;
   final String description;
   final bool status;
+  final int testId;
 
   ChapterSimulator({
     required this.id,
     required this.title,
     required this.description,
     required this.status,
+    required this.testId,
   });
 
   factory ChapterSimulator.fromMap(Map<String, dynamic> map) {
@@ -18,6 +20,7 @@ class ChapterSimulator {
       title: map['title'],
       description: map['description'],
       status: map['status'],
+      testId: map['testId'],
     );
   }
 
@@ -27,6 +30,7 @@ class ChapterSimulator {
       'title': title,
       'description': description,
       'status': status,
+      'testId': testId,
     };
   }
 }

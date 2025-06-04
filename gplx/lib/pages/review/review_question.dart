@@ -92,7 +92,7 @@ class _ReviewQuestionPageState extends State<ReviewQuestionPage> {
         'question': question?.content ?? 'Câu hỏi không có nội dung',
         'answers': question?.answers?.map((answer) => answer.content ?? '').toList() ?? [],
         'correctAnswer': question?.answers?.indexWhere((answer) => answer.correct ?? false) ?? 0,
-        'explanation': 'Đáp án đúng là: ${question?.answers?.firstWhere((answer) => answer.correct ?? false).content ?? "không có"}',
+        'explanation': question?.explain ?? 'Không có giải thích',
         'image': BaseUrl.imageUrl +  question!.image!, // Thêm trường image nếu cần hiển thị
       };
     }).toList();

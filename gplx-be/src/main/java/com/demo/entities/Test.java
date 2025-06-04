@@ -9,7 +9,7 @@ import java.util.List;
 public class Test {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private int id;
 
     private String title;
 
@@ -17,7 +17,7 @@ public class Test {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "rank_id")
+    @JoinColumn(name = "rank_id", nullable = true)
     private Rank rank;
 
     private Integer time;
@@ -31,14 +31,20 @@ public class Test {
     private Integer numberOfQuestions;
 
     private boolean status;
+    @Column(name = "is_test")
+    private boolean isTest;
 
     @OneToMany(mappedBy = "test")
     private List<Chapter> chapters;
 
-    @OneToMany(mappedBy = "test")
+    @OneToMany(mappedBy = "test", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ChapterSimulator> chapterSimulators;
+
+
+    @OneToMany(mappedBy = "test", fetch = FetchType.EAGER)
     private List<TestDetails> testDetails;
 
-    public Integer getId() {
+    public long getId() {
         return id;
     }
 
@@ -98,8 +104,8 @@ public class Test {
         return numberOfQuestions;
     }
 
-    public void setNumberOfQuestions(Integer numberOfQuestions) {
-        this.numberOfQuestions = numberOfQuestions;
+    public void setNumberOfQuestions(Integer numberOfQuestion) {
+        this.numberOfQuestions = numberOfQuestion;
     }
 
     public boolean isStatus() {
@@ -124,5 +130,25 @@ public class Test {
 
     public void setTestDetails(List<TestDetails> testDetails) {
         this.testDetails = testDetails;
+    }
+
+    public List<ChapterSimulator> getChapterSimulators() {
+        return chapterSimulators;
+    }
+
+    public void setChapterSimulators(List<ChapterSimulator> chapterSimulators) {
+        this.chapterSimulators = chapterSimulators;
+    }
+
+    public boolean isTest() {
+        return isTest;
+    }
+
+    public void setTest(boolean test) {
+        isTest = test;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

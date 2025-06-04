@@ -1,5 +1,6 @@
 package com.demo.dtos;
 
+import com.demo.entities.Rank;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 
@@ -12,7 +13,10 @@ public class TestDTO {
     private Integer time;
     private int passedScore;
     private boolean status;
-    private int numberOfQuestion;
+    private Integer rank;
+    private boolean isTest;
+    private Integer numberOfQuestions;
+
     public Long getId() {
         return id;
     }
@@ -56,19 +60,40 @@ public class TestDTO {
     public int getPassedScore() {
         return passedScore;
     }
+
     public void setPassedScore(int passedScore) {
         this.passedScore = passedScore;
     }
+
     public boolean isStatus() {
         return status;
     }
+
     public void setStatus(boolean status) {
         this.status = status;
     }
-    public int getNumberOfQuestion() {
-        return numberOfQuestion;
+
+    public Integer getRank() {
+        return rank;
     }
-    public void setNumberOfQuestion(int numberOfQuestion) {
-        this.numberOfQuestion = numberOfQuestion;
+
+    public void setRank(Integer rank) {
+        this.rank = rank;
+    }
+
+    public boolean isTest() {
+        return isTest;
+    }
+
+    public void setTest(boolean test) {
+        isTest = test;
+    }
+
+    public Integer getNumberOfQuestions() {
+        return numberOfQuestions;
+    }
+
+    public void setNumberOfQuestions(Integer numberOfQuestions) {
+        this.numberOfQuestions = numberOfQuestions;
     }
 }

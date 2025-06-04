@@ -1,6 +1,7 @@
 package com.demo.configurations;
 
 import com.demo.dtos.TestDTO;
+import com.demo.entities.Rank;
 import com.demo.entities.Test;
 import org.modelmapper.ModelMapper;
 
@@ -19,20 +20,30 @@ public class ModelMapperConfiguration {
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper mapper = new ModelMapper();
+
+        // Ánh xạ thủ công số câu hỏi
         mapper.addMappings(new PropertyMap<Test, TestDTO>() {
             @Override
             protected void configure() {
-                // Bỏ qua mặc định, xử lý riêng bằng converter ở dưới
+//                using(ctx -> {
+//                    Test source = (Test) ctx.getSource();
+//                    if (source.getTestDetails() == null) {
+//                        return 0;
+//                    } else {
+//                        return source.getTestDetails().size();
+//                    }
+//                }).map(source, destination.getNumberOfQuestions());
+
+                // Thêm ánh xạ cho Rank (chuyển từ Rank sang Integer - id)
                 using(ctx -> {
-                    Test source = (Test) ctx.getSource();
-                    if (source.getTestDetails() == null) {
-                        return 0;
-                    } else {
-                        return source.getTestDetails().size();
-                    }
-                }).map(source, destination.getNumberOfQuestion());
+                    Rank rank = ((Test) ctx.getSource()).getRank();
+                    return rank != null ? rank.getId() : null;
+                }).map(source, destination.getRank());
             }
         });
+
         return mapper;
     }
+
+
 }

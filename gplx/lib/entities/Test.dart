@@ -5,8 +5,9 @@ class Test {
   int? type;
   int? time;
   bool? status;
-  int? numberOfQuestion;
+  int? numberOfQuestions;
   int? passedScore;
+  bool? isTest;
   // Constructor
   Test({
     this.id,
@@ -15,8 +16,9 @@ class Test {
     this.type,
     this.time,
     this.status,
-    this.numberOfQuestion,
-    this.passedScore
+    this.numberOfQuestions,
+    this.passedScore,
+    this.isTest
   });
 
   // Phương thức để chuyển đổi từ Map sang đối tượng Dart
@@ -28,8 +30,9 @@ class Test {
       type: map['type'] as int?,
       time: map['time'] as int?,
       status: map['status'] as bool?,
-      numberOfQuestion: map['numberOfQuestion'] as int?,
+      numberOfQuestions: map['numberOfQuestions'] as int?,
       passedScore: map['passedScore'] as int?,
+      isTest: map['isTest'] as bool?,
     );
   }
 
@@ -42,8 +45,9 @@ class Test {
       'type': type,
       'time': time,
       'status': status,
-      'numberOfQuestion': numberOfQuestion,
+      'numberOfQuestions': numberOfQuestions,
       'passedScore': passedScore,
+      'isTest' : isTest,
     };
   }
 }

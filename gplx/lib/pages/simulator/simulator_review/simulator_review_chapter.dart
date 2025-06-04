@@ -75,7 +75,10 @@ class _SimulatorReviewChapterPageState extends State<SimulatorReviewChapterPage>
                   MaterialPageRoute(
                     builder: (context) => SituationDetailPage(
                       situations: situations, // Truyền toàn bộ danh sách situations
-                      initialIndex: index, // Vị trí của situation được click
+                      initialIndex: index,
+                      testId: 0,
+                      testPassedScore: 0,
+                      // Vị trí của situation được click
                     ),
                   ),
                 );

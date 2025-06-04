@@ -3,10 +3,11 @@ package com.demo.services;
 import com.demo.dtos.AnswerDTO;
 import com.demo.dtos.QuestionDTO;
 import com.demo.dtos.TestDetailDTO;
-import com.demo.entities.Answer;
-import com.demo.entities.Question;
-import com.demo.entities.TestDetails;
+import com.demo.entities.*;
+import com.demo.repositories.SimulatorRepository;
 import com.demo.repositories.TestDetailsRepository;
+import com.demo.repositories.TestRepository;
+import com.demo.repositories.TestSimulatorDetailsRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,12 @@ import java.util.stream.Collectors;
 public class TestDetailsServiceImpl implements TestDetailsService {
     @Autowired
     private TestDetailsRepository testDetailsRepository;
+    @Autowired
+    private TestSimulatorDetailsRepository testSimulatorDetailsRepository;
+    @Autowired
+    private TestRepository testRepository;
+    @Autowired
+    private SimulatorRepository simulatorRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Override
@@ -49,7 +56,7 @@ public class TestDetailsServiceImpl implements TestDetailsService {
                     .ifPresent(correct -> questionDTO.setCorrectAnswer(correct.getId()));
 
             return new TestDetailDTO(
-                    detail.getTest().getId(),
+                    (int) detail.getTest().getId(),
                     detail.getChapter() != null ? detail.getChapter().getId() : null,
                     questionDTO,
                     detail.getTest().getTime() != null ? detail.getTest().getTime() : 0,
@@ -58,5 +65,7 @@ public class TestDetailsServiceImpl implements TestDetailsService {
                     );
         }).collect(Collectors.toList());
     }
+
+
 
 }
