@@ -144,7 +144,7 @@ class _TestQuestionPageState extends State<TestQuestionPage> {
         'question': question?.content ?? 'Câu hỏi không có nội dung',
         'answers': question?.answers?.map((answer) => answer.content ?? '').toList() ?? [],
         'correctAnswer': question?.answers?.indexWhere((answer) => answer.correct ?? false) ?? 0,
-        'explanation': 'Đáp án đúng là: ${question?.answers?.firstWhere((answer) => answer.correct ?? false).content ?? "không có"}',
+        'explanation': question?.explain ?? 'Không có giải thích',
         'image': question?.image != null ? BaseUrl.imageUrl + question!.image! : null,
         'isCritical': question?.failed ?? false, // Câu điểm liệt (failed = true)
         'index': index, // Lưu chỉ số để theo dõi

@@ -27,6 +27,30 @@ public class TestController {
     private TestService testService;
     @Autowired
     private RankService rankService;
+
+
+
+    @GetMapping(value = "findAllTest", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<TestDTO>> findAllTest() {
+        try {
+            return new ResponseEntity<List<TestDTO>>(testService.findAllTest(), HttpStatus.OK);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<List<TestDTO>>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    @GetMapping(value = "findAllSimulator", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<TestDTO>> findAllSimulator() {
+        try {
+            return new ResponseEntity<List<TestDTO>>(testService.findAllSimulator(), HttpStatus.OK);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<List<TestDTO>>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @GetMapping(value = "findById/{id}", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
     public ResponseEntity<TestDTO> findById(@PathVariable Long id) {
         try {
@@ -47,6 +71,16 @@ public class TestController {
             return new ResponseEntity<List<TestDTO>>(HttpStatus.BAD_REQUEST);
         }
     }
+    @GetMapping(value = "findSimulatorByTypeAndRankId/{type}/{rankId}", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<TestDTO>> findSimulatorByTypeAndRankId(@PathVariable int type, @PathVariable int rankId) {
+        try {
+            return new ResponseEntity<List<TestDTO>>(testService.findSimulatorByTypeAndRankId(type, rankId), HttpStatus.OK);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<List<TestDTO>>(HttpStatus.BAD_REQUEST);
+        }
+    }
 
     @GetMapping(value = "findAllRank", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<RankDTO>> findAllByType() {
@@ -56,6 +90,37 @@ public class TestController {
         catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<List<RankDTO>>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping(value = "findAllByRankIsNull", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<TestDTO>> findAllByRankIsNull() {
+        try {
+            return new ResponseEntity<List<TestDTO>>(testService.findAllTestByRankIsNull(), HttpStatus.OK);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<List<TestDTO>>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    @GetMapping(value = "findTestByRankId/{id}", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<TestDTO>> findTestByRankId(@PathVariable Integer id) {
+        try {
+            return new ResponseEntity<List<TestDTO>>(testService.findTestByRankId(id), HttpStatus.OK);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<List<TestDTO>>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    @GetMapping(value = "findSimulatorByRankId/{id}", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<TestDTO>> findSimulatorByRankId(@PathVariable Integer id) {
+        try {
+            return new ResponseEntity<List<TestDTO>>(testService.findSimulatorByRankId(id), HttpStatus.OK);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<List<TestDTO>>(HttpStatus.BAD_REQUEST);
         }
     }
 }

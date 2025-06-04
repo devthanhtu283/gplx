@@ -8,6 +8,7 @@ public class ChapterSimulatorDTO {
     private String title;
     private String description;
     private Boolean status;
+    private int testId;
 
 
     // Getters and Setters
@@ -44,5 +45,11 @@ public class ChapterSimulatorDTO {
         this.status = status;
     }
 
+    public int getTestId() {
+        return testId;
+    }
 
+    public void setTestId(int testId) {
+        this.testId = testId;
+    }
 }

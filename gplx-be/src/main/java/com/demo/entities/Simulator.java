@@ -6,46 +6,54 @@ import jakarta.persistence.*;
 @Table(name = "simulator")
 public class Simulator {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
 
-    @Column(columnDefinition = "text")
-    private String title;
+        @Column(name = "title")
+        private String title;
 
-    @Column(columnDefinition = "text")
-    private String description;
+        @Column(name = "description")
+        private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "chapter_simulator_id", nullable = false)
-    private ChapterSimulator chapterSimulator;
+        @Column(name = "video_link")
+        private String videoLink;
 
-    @Column(columnDefinition = "text")
-    private String videoLink;
+        @Column(name = "image")
+        private String image;
 
-    @Column(columnDefinition = "text")
-    private String image;
+        @Column(name = "video_length")
+        private Integer videoLength;
 
-    private Integer videoLength;
+        @Column(name = "danger_second")
+        private Integer dangerSecond;
 
-    private Integer dangerSecond;
+        @Column(name = "guide_description")
+        private String guideDescription;
 
-    @Column(columnDefinition = "text")
-    private String guideDescription;
+        @Column(name = "guide_image")
+        private String guideImage;
 
-    @Column(columnDefinition = "text")
-    private String guideImage;
+        @Column(name = "status")
+        private Byte status;
 
-    @Column(nullable = false)
-    private Boolean status;
+        @ManyToOne
+        @JoinColumn(name = "chapter_simulator_id")
+        private ChapterSimulator chapterSimulator;
 
-    // Getters and Setters
+    public ChapterSimulator getChapterSimulator() {
+        return chapterSimulator;
+    }
 
-    public Integer getId() {
+    public void setChapterSimulator(ChapterSimulator chapterSimulator) {
+        this.chapterSimulator = chapterSimulator;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -63,14 +71,6 @@ public class Simulator {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public ChapterSimulator getChapterSimulator() {
-        return chapterSimulator;
-    }
-
-    public void setChapterSimulator(ChapterSimulator chapterSimulator) {
-        this.chapterSimulator = chapterSimulator;
     }
 
     public String getVideoLink() {
@@ -121,11 +121,11 @@ public class Simulator {
         this.guideImage = guideImage;
     }
 
-    public Boolean getStatus() {
+    public Byte getStatus() {
         return status;
     }
 
-    public void setStatus(Boolean status) {
+    public void setStatus(Byte status) {
         this.status = status;
     }
 }

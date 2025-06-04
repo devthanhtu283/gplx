@@ -20,8 +20,16 @@ public class ChapterSimulator {
     @Column(nullable = false)
     private Boolean status;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "test_id", nullable = false) // Cột mới bạn vừa thêm
+    private Test test;
+
     @OneToMany(mappedBy = "chapterSimulator", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Simulator> simulators;
+
+
+
+
 
     public Integer getId() {
         return id;
@@ -61,5 +69,13 @@ public class ChapterSimulator {
 
     public void setSimulators(List<Simulator> simulators) {
         this.simulators = simulators;
+    }
+
+    public Test getTest() {
+        return test;
+    }
+
+    public void setTest(Test test) {
+        this.test = test;
     }
 }

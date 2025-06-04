@@ -12,6 +12,8 @@ import java.util.List;
 
 @Repository
 public interface SimulatorRepository extends CrudRepository<Simulator, Integer> {
+
+
     @Query("FROM Simulator s WHERE s.chapterSimulator.id = :id")
     public List<Simulator> findByChapterSimulatorId(@Param("id") int id);
 

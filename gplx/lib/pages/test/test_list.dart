@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gplx/entities/test.dart';
+import 'package:gplx/entities/Test.dart';
 import 'package:gplx/models/test_api.dart';
 import 'package:gplx/pages/test/test_question.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -181,7 +181,7 @@ class _TestListPageState extends State<TestListPage> {
                     ],
                     SizedBox(height: 8),
                     Text(
-                      'Số câu: ${test.numberOfQuestion ?? 0}',
+                      'Số câu: ${test.numberOfQuestions ?? 0}',
                       style: TextStyle(
                         color: hasDoneTest ? Colors.white : Colors.black,
                       ),

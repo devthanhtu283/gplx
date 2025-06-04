@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gplx/entities/test.dart';
+import 'package:gplx/entities/Test.dart';
 import 'package:gplx/models/test_api.dart';
 import 'package:gplx/pages/review/review_question.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -131,7 +131,7 @@ class _ReviewTestListPageState extends State<ReviewTestListPage> {
                               ),
                               SizedBox(width: 8),
                               Text(
-                                "${filteredTests[index].numberOfQuestion}",
+                                "${filteredTests[index].numberOfQuestions}",
                                 style: TextStyle(fontSize: 20),
                               ),
                             ],

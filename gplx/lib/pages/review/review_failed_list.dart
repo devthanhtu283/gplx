@@ -185,19 +185,19 @@ class _ReviewFailedListPageState extends State<ReviewFailedListPage> {
       body: Column(
         children: [
           // Thanh tìm kiếm
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              onChanged: (query) => filterQuestions(query),
-              decoration: InputDecoration(
-                hintText: 'Tìm kiếm nội dung câu hỏi',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-              ),
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.all(8.0),
+          //   child: TextField(
+          //     onChanged: (query) => filterQuestions(query),
+          //     decoration: InputDecoration(
+          //       hintText: 'Tìm kiếm nội dung câu hỏi',
+          //       prefixIcon: Icon(Icons.search),
+          //       border: OutlineInputBorder(
+          //         borderRadius: BorderRadius.circular(8.0),
+          //       ),
+          //     ),
+          //   ),
+          // ),
           // Nội dung câu hỏi
           Expanded(
             child: FutureBuilder<List<Question>>(
